@@ -1,59 +1,58 @@
-`let tasks = [];
+const express = require('express');
+const cors = require('cors');
+const { Pool } = require('pg');
+require('dotenv').config();
 
-function addTask() {
-  const input = document.getElementById('taskInput');
-  const text = input.value.trim();
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
 
-  if (!text) return;
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: 5432,
+});
 
-  tasks.push({
-    id: Date.now(),
-    text
-  });
+pool.query(`
+  CREATE TABLE IF NOT EXISTS tasks (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    done BOOLEAN DEFAULT false
+  )
+`);
 
-  input.value = '';
-  renderTasks();
-}
+app.get('/api/tasks', async (req, res) => {
+  const result = await pool.query('SELECT * FROM tasks ORDER BY id DESC');
+  res.json(result.rows);
+});
 
-function deleteTask(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  renderTasks();
-}
-
-function editTask(id) {
-  const task = tasks.find(t => t.id === id);
-  const nuevo = prompt('Editar tarea:', task.text);
-
-  if (nuevo && nuevo.trim()) {
-    task.text = nuevo.trim();
-    renderTasks();
-  }
-}
-
-function renderTasks() {
-  const list = document.getElementById('taskList');
-  const search = document.getElementById('search').value.toLowerCase();
-
-  list.innerHTML = '';
-
-  const filtradas = tasks.filter(t =>
-    t.text.toLowerCase().includes(search)
+app.post('/api/tasks', async (req, res) => {
+  const { title } = req.body;
+  const result = await pool.query(
+    'INSERT INTO tasks (title) VALUES ($1) RETURNING *',
+    [title]
   );
+  res.json(result.rows[0]);
+});
 
-  filtradas.forEach(task => {
-    list.innerHTML += \`
-      <li>
-        <span>\${task.text}</span>
-        <div class="actions">
-          <button class="edit" onclick="editTask(\${task.id})">✏️</button>
-          <button class="delete" onclick="deleteTask(\${task.id})">🗑️</button>
-        </div>
-      </li>
-    \`;
-  });
+app.put('/api/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, done } = req.body;
+  const result = await pool.query(
+    'UPDATE tasks SET title = $1, done = $2 WHERE id = $3 RETURNING *',
+    [title, done, id]
+  );
+  res.json(result.rows[0]);
+});
 
-  document.getElementById('total').textContent =
-    tasks.length + (tasks.length === 1 ? ' tarea' : ' tareas');
-}
+app.delete('/api/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+  await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
+  res.json({ ok: true });
+});
 
-document.getElementById('search').addEventListener('input', renderTasks);`
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor Sheily corriendo en puerto ${PORT}`));
