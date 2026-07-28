@@ -8,16 +8,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F3F5F4;
+    --bg:#FFF3E4;
     --surface:#FFFFFF;
-    --text:#1C2321;
-    --muted:#6B7570;
-    --border:#E4E8E6;
-    --pine:#1B4B43;
-    --pine-dark:#123A34;
-    --amber:#D98E2B;
+    --text:#20261F;
+    --muted:#6E7A6C;
+    --border:#F0DCC0;
+    --green:#1B6E52;
+    --green-dark:#124F3A;
+    --orange:#E8792B;
+    --orange-light:#FBD9A9;
     --danger:#B3452C;
-    --radius:14px;
+    --radius:16px;
   }
   *{box-sizing:border-box;}
   body{
@@ -30,41 +31,51 @@
     justify-content:center;
     padding:56px 20px;
   }
-  .card{
-    width:100%;
-    max-width:560px;
-    background:var(--surface);
-    border-radius:var(--radius);
+  .wrap{width:100%;max-width:580px;}
+  .hero{
+    background:linear-gradient(135deg, var(--orange-light), var(--bg));
+    border-radius:var(--radius) var(--radius) 0 0;
+    padding:28px 36px 0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
     border:1px solid var(--border);
-    box-shadow:0 1px 2px rgba(20,30,25,0.04), 0 12px 32px rgba(20,30,25,0.06);
-    padding:36px 36px 28px;
+    border-bottom:none;
   }
-  .eyebrow{
+  .hero-text{margin-bottom:8px;}
+  .hero-text .eyebrow{
     font-size:12px;
     letter-spacing:.12em;
     text-transform:uppercase;
-    color:var(--pine);
+    color:var(--green);
     font-weight:600;
     margin:0 0 6px;
   }
-  h1{
+  .hero-text h1{
     font-family:'Fraunces',serif;
     font-weight:600;
     font-size:30px;
-    margin:0 0 22px;
+    margin:0;
     letter-spacing:-0.01em;
+  }
+  .card{
+    background:var(--surface);
+    border-radius:0 0 var(--radius) var(--radius);
+    border:1px solid var(--border);
+    box-shadow:0 1px 2px rgba(20,30,25,0.04), 0 12px 32px rgba(20,30,25,0.07);
+    padding:28px 36px 32px;
   }
   .progress-row{
     display:flex;
     align-items:center;
     gap:14px;
-    margin-bottom:26px;
+    margin-bottom:24px;
   }
   .ring{
     width:44px;
     height:44px;
     border-radius:50%;
-    background:conic-gradient(var(--pine) calc(var(--pct,0)*1%), var(--border) 0);
+    background:conic-gradient(var(--green) calc(var(--pct,0)*1%), var(--border) 0);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -77,19 +88,9 @@
     border-radius:50%;
     background:var(--surface);
   }
-  .progress-text{
-    font-size:13px;
-    color:var(--muted);
-  }
-  .progress-text strong{
-    color:var(--text);
-    font-weight:600;
-  }
-  .row{
-    display:flex;
-    gap:8px;
-    margin-bottom:12px;
-  }
+  .progress-text{font-size:13px;color:var(--muted);}
+  .progress-text strong{color:var(--text);font-weight:600;}
+  .row{display:flex;gap:8px;margin-bottom:12px;}
   input[type=text]{
     flex:1;
     padding:11px 14px;
@@ -97,15 +98,12 @@
     border-radius:10px;
     font-family:'Inter',sans-serif;
     font-size:14px;
-    background:#FBFCFB;
+    background:#FFFBF5;
     color:var(--text);
     outline:none;
     transition:border-color .15s;
   }
-  input[type=text]:focus{
-    border-color:var(--pine);
-    background:var(--surface);
-  }
+  input[type=text]:focus{border-color:var(--orange);background:var(--surface);}
   button{
     cursor:pointer;
     font-family:'Inter',sans-serif;
@@ -115,18 +113,13 @@
     border-radius:10px;
   }
   #addBtn{
-    background:var(--pine);
+    background:var(--orange);
     color:#fff;
     padding:0 20px;
     transition:background .15s;
   }
-  #addBtn:hover{background:var(--pine-dark);}
-  #filter{margin-bottom:8px;}
-  .divider{
-    border:none;
-    border-top:1px solid var(--border);
-    margin:20px 0 8px;
-  }
+  #addBtn:hover{background:#CE651C;}
+  .divider{border:none;border-top:1px solid var(--border);margin:20px 0 8px;}
   ul{list-style:none;margin:0;padding:0;}
   li{
     display:flex;
@@ -148,21 +141,9 @@
     justify-content:center;
     transition:.15s;
   }
-  li.done .check{
-    background:var(--pine);
-    border-color:var(--pine);
-    color:#fff;
-    font-size:12px;
-  }
-  .task-text{
-    flex:1;
-    font-size:14.5px;
-    cursor:pointer;
-  }
-  li.done .task-text{
-    color:var(--muted);
-    text-decoration:line-through;
-  }
+  li.done .check{background:var(--green);border-color:var(--green);color:#fff;font-size:12px;}
+  .task-text{flex:1;font-size:14.5px;cursor:pointer;}
+  li.done .task-text{color:var(--muted);text-decoration:line-through;}
   .actions{display:flex;gap:4px;}
   .icon-btn{
     background:transparent;
@@ -174,19 +155,65 @@
   }
   .icon-btn:hover{background:var(--bg);}
   .icon-btn.del:hover{color:var(--danger);}
-  .empty{
-    text-align:center;
-    padding:34px 10px 10px;
-    color:var(--muted);
-    font-size:14px;
-  }
+  .empty{text-align:center;padding:34px 10px 10px;color:var(--muted);font-size:14px;}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Gestor de tareas</p>
+      <h1>Sheily's To-Do List</h1>
+    </div>
+    <svg width="100%" height="150" viewBox="0 0 420 200" style="margin:-10px 0 0;">
+      <circle cx="210" cy="110" r="120" fill="#FBD9A9" opacity="0.5"/>
+      <g transform="translate(20,10)">
+        <rect x="0" y="10" width="90" height="120" rx="8" fill="#FFFFFF" stroke="#1B6E52" stroke-width="3"/>
+        <rect x="25" y="0" width="40" height="16" rx="6" fill="#124F3A"/>
+        <rect x="33" y="4" width="24" height="6" rx="3" fill="#FFFFFF"/>
+        <g stroke="#E8792B" stroke-width="3" stroke-linecap="round">
+          <path d="M12 35 L18 41 L28 28"/>
+          <path d="M12 62 L18 68 L28 55"/>
+          <path d="M12 89 L18 95 L28 82"/>
+        </g>
+        <rect x="36" y="33" width="42" height="5" rx="2.5" fill="#20261F" opacity="0.7"/>
+        <rect x="36" y="60" width="42" height="5" rx="2.5" fill="#20261F" opacity="0.3"/>
+        <rect x="36" y="87" width="42" height="5" rx="2.5" fill="#20261F" opacity="0.3"/>
+      </g>
+      <ellipse cx="230" cy="188" rx="150" ry="10" fill="#124F3A" opacity="0.1"/>
+      <rect x="90" y="155" width="280" height="14" rx="4" fill="#20261F"/>
+      <g transform="translate(100,105)">
+        <rect x="0" y="0" width="90" height="52" rx="4" fill="#E8792B"/>
+        <rect x="6" y="6" width="78" height="40" rx="2" fill="#FFF3E4"/>
+        <rect x="-6" y="52" width="102" height="7" rx="3" fill="#CE651C"/>
+      </g>
+      <g transform="translate(190,15)">
+        <path d="M10 90 Q0 40 45 40 Q90 40 80 90 Z" fill="#1B6E52"/>
+        <circle cx="45" cy="20" r="26" fill="#F2C29B"/>
+        <path d="M19 14 Q22 -10 45 -8 Q70 -10 71 16 Q71 4 60 4 Q55 -4 45 0 Q34 -4 30 6 Q19 4 19 14Z" fill="#20261F"/>
+        <circle cx="34" cy="22" r="7" fill="none" stroke="#20261F" stroke-width="2"/>
+        <circle cx="56" cy="22" r="7" fill="none" stroke="#20261F" stroke-width="2"/>
+        <line x1="41" y1="22" x2="49" y2="22" stroke="#20261F" stroke-width="2"/>
+        <path d="M78 55 Q100 60 98 78 Q96 90 82 86" fill="none" stroke="#1B6E52" stroke-width="14" stroke-linecap="round"/>
+        <rect x="80" y="66" width="26" height="32" rx="3" fill="#FFFFFF" stroke="#E8792B" stroke-width="2"/>
+      </g>
+      <g transform="translate(330,45)">
+        <rect x="0" y="0" width="46" height="32" rx="6" fill="#1B6E52"/>
+        <path d="M3 4 L23 20 L43 4" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g transform="translate(340,120)">
+        <circle cx="20" cy="20" r="18" fill="#E8792B"/>
+        <circle cx="20" cy="20" r="7" fill="#FFF3E4"/>
+        <g stroke="#FFF3E4" stroke-width="4" stroke-linecap="round">
+          <line x1="20" y1="4" x2="20" y2="9"/>
+          <line x1="20" y1="31" x2="20" y2="36"/>
+          <line x1="4" y1="20" x2="9" y2="20"/>
+          <line x1="31" y1="20" x2="36" y2="20"/>
+        </g>
+      </g>
+    </svg>
+  </div>
   <div class="card">
-    <p class="eyebrow">Gestor de tareas</p>
-    <h1>Sheily's To-Do List</h1>
-
     <div class="progress-row">
       <div class="ring" id="ring" style="--pct:0"></div>
       <div class="progress-text" id="progressText"><strong>0</strong> de 0 completadas</div>
@@ -202,6 +229,7 @@
     <ul id="list"></ul>
     <p class="empty" id="emptyState" style="display:none;">Aún no hay tareas. Agrega la primera arriba.</p>
   </div>
+</div>
   <script src="app.js"></script>
 </body>
 </html>
