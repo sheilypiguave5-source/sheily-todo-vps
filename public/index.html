@@ -2,22 +2,206 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sheily's To-Do List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  body { font-family: sans-serif; max-width: 500px; margin: 40px auto; }
-  li { display: flex; justify-content: space-between; padding: 6px 0; }
-  li.done span { text-decoration: line-through; color: #999; }
-  input[type=text] { padding: 6px; width: 70%; }
-  button { cursor: pointer; }
+  :root{
+    --bg:#F3F5F4;
+    --surface:#FFFFFF;
+    --text:#1C2321;
+    --muted:#6B7570;
+    --border:#E4E8E6;
+    --pine:#1B4B43;
+    --pine-dark:#123A34;
+    --amber:#D98E2B;
+    --danger:#B3452C;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:56px 20px;
+  }
+  .card{
+    width:100%;
+    max-width:560px;
+    background:var(--surface);
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    box-shadow:0 1px 2px rgba(20,30,25,0.04), 0 12px 32px rgba(20,30,25,0.06);
+    padding:36px 36px 28px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--pine);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:30px;
+    margin:0 0 22px;
+    letter-spacing:-0.01em;
+  }
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:26px;
+  }
+  .ring{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:conic-gradient(var(--pine) calc(var(--pct,0)*1%), var(--border) 0);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .ring::after{
+    content:"";
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--surface);
+  }
+  .progress-text{
+    font-size:13px;
+    color:var(--muted);
+  }
+  .progress-text strong{
+    color:var(--text);
+    font-weight:600;
+  }
+  .row{
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  input[type=text]{
+    flex:1;
+    padding:11px 14px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    background:#FBFCFB;
+    color:var(--text);
+    outline:none;
+    transition:border-color .15s;
+  }
+  input[type=text]:focus{
+    border-color:var(--pine);
+    background:var(--surface);
+  }
+  button{
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    border:none;
+    border-radius:10px;
+  }
+  #addBtn{
+    background:var(--pine);
+    color:#fff;
+    padding:0 20px;
+    transition:background .15s;
+  }
+  #addBtn:hover{background:var(--pine-dark);}
+  #filter{margin-bottom:8px;}
+  .divider{
+    border:none;
+    border-top:1px solid var(--border);
+    margin:20px 0 8px;
+  }
+  ul{list-style:none;margin:0;padding:0;}
+  li{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 4px;
+    border-bottom:1px solid var(--border);
+  }
+  li:last-child{border-bottom:none;}
+  .check{
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    border:1.5px solid var(--muted);
+    flex-shrink:0;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.15s;
+  }
+  li.done .check{
+    background:var(--pine);
+    border-color:var(--pine);
+    color:#fff;
+    font-size:12px;
+  }
+  .task-text{
+    flex:1;
+    font-size:14.5px;
+    cursor:pointer;
+  }
+  li.done .task-text{
+    color:var(--muted);
+    text-decoration:line-through;
+  }
+  .actions{display:flex;gap:4px;}
+  .icon-btn{
+    background:transparent;
+    border-radius:8px;
+    width:30px;
+    height:30px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .icon-btn:hover{background:var(--bg);}
+  .icon-btn.del:hover{color:var(--danger);}
+  .empty{
+    text-align:center;
+    padding:34px 10px 10px;
+    color:var(--muted);
+    font-size:14px;
+  }
 </style>
 </head>
 <body>
-  <h1>Sheily's To-Do List</h1>
-  <input id="newTask" type="text" placeholder="Nueva tarea...">
-  <button onclick="addTask()">Agregar</button>
-  <br><br>
-  <input id="filter" type="text" placeholder="Filtrar tareas..." oninput="renderTasks()">
-  <ul id="list"></ul>
+  <div class="card">
+    <p class="eyebrow">Gestor de tareas</p>
+    <h1>Sheily's To-Do List</h1>
+
+    <div class="progress-row">
+      <div class="ring" id="ring" style="--pct:0"></div>
+      <div class="progress-text" id="progressText"><strong>0</strong> de 0 completadas</div>
+    </div>
+
+    <div class="row">
+      <input id="newTask" type="text" placeholder="Escribe una nueva tarea...">
+      <button id="addBtn" onclick="addTask()">Agregar</button>
+    </div>
+    <input id="filter" type="text" placeholder="Filtrar tareas..." oninput="renderTasks()">
+
+    <hr class="divider">
+    <ul id="list"></ul>
+    <p class="empty" id="emptyState" style="display:none;">Aún no hay tareas. Agrega la primera arriba.</p>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
